@@ -1,0 +1,31 @@
+{
+  "name": "ocr-p6",
+  "version": "1.0.0",
+  "description": "movie ranking app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "start": "webpack serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dev-KC20/ocr-p6.git"
+  },
+  "author": "ocr-dev_KC",
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/dev-KC20/ocr-p6/issues"
+  },
+  "homepage": "https://github.com/dev-KC20/ocr-p6#readme",
+  "devDependencies": {
+    "@babel/core": "^7.16.12",
+    "@babel/preset-env": "^7.16.11",
+    "babel-loader": "^8.2.3",
+    "babel-polyfill": "^6.26.0",
+    "webpack": "^5.67.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-serve": "^4.0.0"
+  }
+}

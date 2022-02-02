@@ -1,0 +1,24 @@
+
+* {
+  list-style-type: none;
+}
+header {
+  background: darkgrey;
+  color: white;
+  text-align: center;
+  font-family: "system-ui";
+}
+body {
+  background: black;
+  color: white;
+  text-align: center;
+  font-family: "system-ui";
+}
+
+
+img {
+  object-fit: cover;
+  width: 40%;
+  max-width: 250px;
+}
+
