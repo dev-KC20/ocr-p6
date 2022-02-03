@@ -141,6 +141,43 @@ let retrieveSortedMovies = async function () {
     }
   }
 }
+/**
+ * @function
+ * collects as many as set movies IDs for the listed genres 
+ * with async fetch while condition can't depend on promise, therefore:
+ * 6 genres + 1 best per 7 
+ * the OCMovies-API supplies 5 items per pages
+ * at least 2 pages will be loaded
+ * loop of parallel getters
+ */
+let buildDocumentElements = function () {
+  debugger
+  for (let categoryCurrent of categorieList) {
+    // create a div anchor at category level
+    let newEltParent = document.createElement("div");
+    newEltParent.setAttribute("class", 'carousel');
+    newEltParent.setAttribute("id", categoryCurrent);
+    let h2 = document.createElement('h2');
+    h2.textContent = categoryCurrent
+    newEltParent.appendChild(h2);
+    carouselAnchor.appendChild(newEltParent);
+    let carouselAnchorChild = document.querySelector("#" + categoryCurrent);
+    // console.log('anchorChild:', carouselAnchorChild)
+    // console.log('build moviesObject:', moviesObject[categoryCurrent]);
+    moviesObject[categoryCurrent].forEach(movieElement => {
+      let newEltChild = document.createElement("div");
+      newEltChild.setAttribute("class", 'carousel-child');
+      newEltChild.setAttribute("id", movieElement);
+      // add img
+      carouselAnchorChild.appendChild(newEltChild);
+      let newEltImg = document.createElement("img");
+      newEltImg.src = movieElement.image_url;
+      newEltImg.setAttribute("id", movieElement);
+      carouselAnchorChild.appendChild(newEltImg);
+    });
+
+  }
+}
 
 
 let baseUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score";
@@ -151,14 +188,17 @@ let numberOfMoviesPerCategoryToShow = 7;
 /** @type {category:MovieLight[]}  [{'Fantasy': [MovieLight()...]}]*/
 let moviesObject = {}
 // createFull(bestFilmUrl).then(function (movie) { console.log(movie) })
+const carouselAnchor = document.querySelector(".best-section");
+
 
 checkApiServer().then((sucess) => {
   retrieveSortedMovies();
   console.log('moviesObject:', moviesObject);
+  buildDocumentElements();
 })
-  .catch((reject) => {
-    throw ('The API server is not available, end of the App');
-  }
+  // .catch((reject) => {
+  //   throw ('The API server is not available, end of the App');
+  // }
 
-  )
+  // )
 
