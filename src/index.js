@@ -93,22 +93,25 @@ let checkApiServer = async function () {
   try {
     let responseCheck = await fetch(baseUrl);
     if (!responseCheck.ok) { throw new Error('Fetch missed, pls check API server'); }
-
+    return true;
   } catch (error) {
-    throw console.error(error);;
+    console.log(error);
+    return false;
   }
 
 }
 let getSortedMovies = async function (sortedMoviePageUrl) {
-  let response = await fetch(sortedMoviePageUrl);
-
+  const response = await fetch(sortedMoviePageUrl);
   if (!response.ok) { throw new Error('Fetch missed, pls check API server'); }
-  let data = await response.json();
+  const data = await response.json();
   // console.log('data', data);
-  return await data
+  return  data
 }
 
-
+let buildSortedMoviesList = async function (moviesObject, movieCurrent, category) {
+  moviesObject[category].push(
+    new MovieLight(movieCurrent.id, movieCurrent.url, movieCurrent.image_url, movieCurrent.title, movieCurrent.genres, movieCurrent.imdb_score))
+}
 /**
  * @function
  * collects as many as set movies IDs for the listed genres 
@@ -128,11 +131,12 @@ let retrieveSortedMovies = async function () {
 
     while ((maxLoop > 1) && (searchUrl != null)) {
       // console.log('searchUrl:', searchUrl);
-      getSortedMovies(searchUrl)
+      await getSortedMovies(searchUrl)
         .then(async (sortedMovieList) => {
           for await (movieCurrent of sortedMovieList.results) {
-            moviesObject[categoryCurrent].push(
-              new MovieLight(movieCurrent.id, movieCurrent.url, movieCurrent.image_url, movieCurrent.title, movieCurrent.genres, movieCurrent.imdb_score))
+            let buildSorted = await buildSortedMoviesList(moviesObject, movieCurrent, categoryCurrent);
+            // moviesObject[categoryCurrent].push(
+            //   new MovieLight(movieCurrent.id, movieCurrent.url, movieCurrent.image_url, movieCurrent.title, movieCurrent.genres, movieCurrent.imdb_score))
             categoryLength++;
           };
           searchUrl = await sortedMovieList.next;
@@ -141,6 +145,21 @@ let retrieveSortedMovies = async function () {
     }
   }
 }
+
+let buildCarouselChildren = async (carouselAnchorChild, childrenListElement) => {
+  console.log('childrenList:', childrenListElement);
+  console.log('moviesObject5:', moviesObject);
+  let newEltChild = document.createElement("div");
+  newEltChild.setAttribute("class", 'carousel-child');
+  newEltChild.setAttribute("id", childrenListElement['id']);
+  carouselAnchorChild.appendChild(newEltChild);
+  let newEltImg = document.createElement("img");
+  newEltImg.src = childrenListElement.image_url;
+  newEltImg.setAttribute("id", childrenListElement['id']);
+  carouselAnchorChild.appendChild(newEltImg);
+}
+
+
 /**
  * @function
  * collects as many as set movies IDs for the listed genres 
@@ -150,52 +169,55 @@ let retrieveSortedMovies = async function () {
  * at least 2 pages will be loaded
  * loop of parallel getters
  */
-let buildDocumentElements = function () {
-  debugger
+let buildDocumentElements = async () => {
+  const carouselAnchor = document.querySelector(".best-section");
+  console.log('moviesObject2:', moviesObject);
   for (let categoryCurrent of categorieList) {
+    console.log('moviesObject3:', moviesObject);
     // create a div anchor at category level
     let newEltParent = document.createElement("div");
     newEltParent.setAttribute("class", 'carousel');
     newEltParent.setAttribute("id", categoryCurrent);
     let h2 = document.createElement('h2');
-    h2.textContent = categoryCurrent
+    h2.textContent = categoryCurrent;
     newEltParent.appendChild(h2);
     carouselAnchor.appendChild(newEltParent);
     let carouselAnchorChild = document.querySelector("#" + categoryCurrent);
-    // console.log('anchorChild:', carouselAnchorChild)
-    // console.log('build moviesObject:', moviesObject[categoryCurrent]);
-    moviesObject[categoryCurrent].forEach(movieElement => {
-      let newEltChild = document.createElement("div");
-      newEltChild.setAttribute("class", 'carousel-child');
-      newEltChild.setAttribute("id", movieElement);
-      // add img
-      carouselAnchorChild.appendChild(newEltChild);
-      let newEltImg = document.createElement("img");
-      newEltImg.src = movieElement.image_url;
-      newEltImg.setAttribute("id", movieElement);
-      carouselAnchorChild.appendChild(newEltImg);
-    });
+    // debugger
+    for (move of moviesObject[categoryCurrent]) {
+      console.log('move', move);
+      console.log('moviesObject[categoryCurrent]:', moviesObject[categoryCurrent]);
 
+      const getChild = buildCarouselChildren(carouselAnchorChild, move);
+    }
   }
 }
+
+
+
+
 
 
 let baseUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score";
 let bestFilmUrl = "http://localhost:8000/api/v1/titles/1508669";
 let bestCategory = 'Best'
-let categorieList = [bestCategory, 'Fantasy', 'Action', 'Documentary', 'Crime', 'Sci-Fi', 'Western'];
+let categorieList = [bestCategory, 'Fantasy', 'Action', 'Thriller', 'Crime', 'Sci-Fi', 'Western'];
 let numberOfMoviesPerCategoryToShow = 7;
 /** @type {category:MovieLight[]}  [{'Fantasy': [MovieLight()...]}]*/
 let moviesObject = {}
 // createFull(bestFilmUrl).then(function (movie) { console.log(movie) })
-const carouselAnchor = document.querySelector(".best-section");
 
 
-checkApiServer().then((sucess) => {
-  retrieveSortedMovies();
-  console.log('moviesObject:', moviesObject);
-  buildDocumentElements();
-})
+
+checkApiServer().then((success) => {
+  if (success) {
+    retrieveSortedMovies().then(() => {
+      console.log('moviesObject:', moviesObject);
+      buildDocumentElements();
+    })
+  }
+}
+)
   // .catch((reject) => {
   //   throw ('The API server is not available, end of the App');
   // }

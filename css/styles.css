@@ -1,24 +1,15 @@
-
-* {
-  list-style-type: none;
-}
-header {
-  background: darkgrey;
-  color: white;
-  text-align: center;
-  font-family: "system-ui";
-}
-body {
-  background: black;
-  color: white;
-  text-align: center;
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   font-family: "system-ui";
 }
 
 
-img {
-  object-fit: cover;
-  width: 40%;
-  max-width: 250px;
-}
 
+h2{
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  color: rgb(46, 41, 41);
+}
