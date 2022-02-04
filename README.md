@@ -22,3 +22,10 @@ Une association souhaite se doter d’une application web permettant de visualis
 
 Développer la partie Front-End d’une application avec HTML, CSS et JavaScript
 Interagir avec une API REST
+
+## Installation
+
+En cours de développement, installation non recommandée.
+Necessite le serveur local d'API : OCMovies-API @/OpenClassrooms-Student-Center/OCMovies-API-EN-FR.git
+Base : JS sous firefox 96, Fetch, CSS3, HTML5,  
+Encore aucun babel-polyfill appliqué
