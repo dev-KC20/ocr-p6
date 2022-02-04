@@ -1,15 +1,32 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "system-ui";
+  color: black;
+}
+.header > p:nth-child(1){
+  display: flex;
+  justify-content:center;
+  max-width: 100%;
+  height: auto;
 }
 
+#hs-1 {
+  margin-top: 2%;
+}
+#nav-0 {
+  font-size: 200%;
+}
+#nav-1,
+#nav-2 {
+  font-size: 150%;
+  align-content: right;
+}
 
-
-h2{
-  font-size: 20px;
+h2 {
+  font-size: 200%;
   font-weight: bold;
-  text-align: center;
-  color: rgb(46, 41, 41);
+  text-align: start;
+  color: gray;
 }

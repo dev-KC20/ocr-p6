@@ -130,7 +130,6 @@ let retrieveSortedMovies = async function () {
     let maxLoop = 3;
 
     while ((maxLoop > 1) && (searchUrl != null)) {
-      // console.log('searchUrl:', searchUrl);
       await getSortedMovies(searchUrl)
         .then(async (sortedMovieList) => {
           for await (movieCurrent of sortedMovieList.results) {
@@ -147,8 +146,6 @@ let retrieveSortedMovies = async function () {
 }
 
 let buildCarouselChildren = async (carouselAnchorChild, childrenListElement) => {
-  console.log('childrenList:', childrenListElement);
-  console.log('moviesObject5:', moviesObject);
   let newEltChild = document.createElement("div");
   newEltChild.setAttribute("class", 'carousel-child');
   newEltChild.setAttribute("id", childrenListElement['id']);
@@ -171,9 +168,7 @@ let buildCarouselChildren = async (carouselAnchorChild, childrenListElement) => 
  */
 let buildDocumentElements = async () => {
   const carouselAnchor = document.querySelector(".best-section");
-  console.log('moviesObject2:', moviesObject);
   for (let categoryCurrent of categorieList) {
-    console.log('moviesObject3:', moviesObject);
     // create a div anchor at category level
     let newEltParent = document.createElement("div");
     newEltParent.setAttribute("class", 'carousel');
@@ -185,8 +180,6 @@ let buildDocumentElements = async () => {
     let carouselAnchorChild = document.querySelector("#" + categoryCurrent);
     // debugger
     for (move of moviesObject[categoryCurrent]) {
-      console.log('move', move);
-      console.log('moviesObject[categoryCurrent]:', moviesObject[categoryCurrent]);
 
       const getChild = buildCarouselChildren(carouselAnchorChild, move);
     }
@@ -205,14 +198,12 @@ let categorieList = [bestCategory, 'Fantasy', 'Action', 'Thriller', 'Crime', 'Sc
 let numberOfMoviesPerCategoryToShow = 7;
 /** @type {category:MovieLight[]}  [{'Fantasy': [MovieLight()...]}]*/
 let moviesObject = {}
-// createFull(bestFilmUrl).then(function (movie) { console.log(movie) })
 
 
 
 checkApiServer().then((success) => {
   if (success) {
     retrieveSortedMovies().then(() => {
-      console.log('moviesObject:', moviesObject);
       buildDocumentElements();
     })
   }
