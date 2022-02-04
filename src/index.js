@@ -1,3 +1,139 @@
+
+class Carousel {
+  /** credits to the course given with 'Art' by Jonathan @grafikart.fr */
+  constructor(element, options = {}) {
+    /** save HTML content to be placed in a 'slidable' container. */
+    this.element = element
+    /** to generalize & make flexible the parameters of Carousel
+    */
+    this.options = Object.assign({}, {
+      slidesToScroll: 1,
+      slidesVisible: 1,
+      loop: false
+    }, options)
+    let children = [].slice.call(element.children)
+    this.isMobile = false
+    this.currentItem = 0
+    this.moveCallBacks = []
+
+    this.root = this.createDivWithClass('carousel')
+    this.container = this.createDivWithClass('carousel__container')
+    this.root.setAttribute("tabindex", "0")
+    this.root.appendChild(this.container)
+    this.element.appendChild(this.root)
+    this.items = children.map((child) => {
+      let item = this.createDivWithClass('carousel__item')
+      item.appendChild(child)
+      this.container.appendChild(item)
+      return item
+    })
+
+    this.setStyle()
+    this.createNavigation()
+
+    this.moveCallBacks.forEach(cb => cb(0))
+    this.onWindowResize()
+    window.addEventListener('resize', this.onWindowResize.bind(this))
+    this.root.addEventListener('keyup', e => {
+      if (e.key === "ArrowRight" || e.key === "Right") {
+        debugger
+        this.next()
+      } else if (e.key === "ArrowLeft" || e.key === "Left") {
+        this.prev()
+      }
+    })
+  }
+
+  setStyle() {
+    let ratio = this.items.length / this.slidesVisible
+    this.container.style.width = (ratio * 100) + "%"
+    this.items.forEach(item => item.style.width = ((100 / this.slidesVisible) / ratio) + "%")
+  }
+
+  createNavigation() {
+    let nextButton = this.createDivWithClass("carousel__next")
+    let prevButton = this.createDivWithClass("carousel__prev")
+    this.root.parentNode.appendChild(nextButton)
+    this.root.parentNode.appendChild(prevButton)
+    nextButton.addEventListener("click", this.next.bind(this))
+    prevButton.addEventListener("click", this.prev.bind(this))
+    if (this.options.loop === true) {
+      return
+    }
+    this.onMove(index => {
+      if (index === 0) {
+        prevButton.classList.add("carousel__prev--hidden")
+      } else {
+        prevButton.classList.remove("carousel__prev--hidden")
+      }
+      if (this.items[this.currentItem + this.slidesVisible] === undefined) {
+        nextButton.classList.add("carousel__next--hidden")
+      } else {
+        nextButton.classList.remove("carousel__next--hidden")
+      }
+    })
+  }
+
+  next() {
+    this.goToItem(this.currentItem + this.slidesToScroll)
+  }
+
+  prev() {
+    this.goToItem(this.currentItem - this.slidesToScroll)
+  }
+
+
+  goToItem(index) {
+    if (index < 0) {
+      if (this.options.loop) {
+        index = this.items.length - this.slidesVisible
+      } else {
+        return
+      }
+    } else if (index >= this.items.length || (this.items[this.currentItem + this.slidesVisible] === undefined && index > this.currentItem)) {
+      if (this.options.loop) {
+        index = 0
+      } else {
+        return
+      }
+    }
+    let translateX = index * -100 / this.items.length
+    this.container.style.transform = 'translate3d(' + translateX + '%, 0, 0)'
+    this.currentItem = index
+    this.moveCallBacks.forEach(cb => cb(index))
+
+  }
+
+   onMove(cb) {
+    this.moveCallBacks.push(cb)
+  }
+
+  onWindowResize() {
+    let mobile = window.innerWidth < 800
+    if (mobile !== this.isMobile) {
+      this.isMobile = mobile
+      this.setStyle()
+    }
+    this.moveCallBacks.forEach(cb => cb(this.currentItem))
+  }
+
+   createDivWithClass(className) {
+    let div = document.createElement("div")
+    div.setAttribute("class", className)
+    return div
+  }
+
+
+  get slidesToScroll() {
+    return this.isMobile ? 1 : this.options.slidesToScroll
+  }
+
+  get slidesVisible() {
+    return this.isMobile ? 1 : this.options.slidesVisible
+  }
+}
+
+
 /**
  * Represents a movie as  described in imdb database and to be shown if requested thru Modal.
  * @constructor
@@ -105,7 +241,7 @@ let getSortedMovies = async function (sortedMoviePageUrl) {
   if (!response.ok) { throw new Error('Fetch missed, pls check API server'); }
   const data = await response.json();
   // console.log('data', data);
-  return  data
+  return data
 }
 
 let buildSortedMoviesList = async function (moviesObject, movieCurrent, category) {
@@ -167,30 +303,24 @@ let buildCarouselChildren = async (carouselAnchorChild, childrenListElement) => 
  * loop of parallel getters
  */
 let buildDocumentElements = async () => {
-  const carouselAnchor = document.querySelector(".best-section");
+  // const carouselAnchor = document.querySelector(".best-section");
   for (let categoryCurrent of categorieList) {
     // create a div anchor at category level
     let newEltParent = document.createElement("div");
-    newEltParent.setAttribute("class", 'carousel');
+    newEltParent.setAttribute("class", 'carousel-parent');
     newEltParent.setAttribute("id", categoryCurrent);
-    let h2 = document.createElement('h2');
-    h2.textContent = categoryCurrent;
-    newEltParent.appendChild(h2);
+    newEltParent.textContent =  categoryCurrent;
     carouselAnchor.appendChild(newEltParent);
     let carouselAnchorChild = document.querySelector("#" + categoryCurrent);
     // debugger
-    for (move of moviesObject[categoryCurrent]) {
+    for (let move of moviesObject[categoryCurrent]) {
 
       const getChild = buildCarouselChildren(carouselAnchorChild, move);
     }
   }
 }
 
-
-
-
-
-
+const carouselAnchor = document.querySelector(".best-section");
 let baseUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score";
 let bestFilmUrl = "http://localhost:8000/api/v1/titles/1508669";
 let bestCategory = 'Best'
@@ -204,7 +334,19 @@ let moviesObject = {}
 checkApiServer().then((success) => {
   if (success) {
     retrieveSortedMovies().then(() => {
-      buildDocumentElements();
+      buildDocumentElements()
+        .then(async  () => {
+          // anchor is of class 'carousel-parent' and id the 'category' value
+          // We loop thru categories to set anchors & build carousel
+          for await (let categoryCurrent of categorieList) {
+            let bestCategoryAnchor = document.querySelector(".best-section #" + categoryCurrent + ".carousel-parent");
+            new Carousel(bestCategoryAnchor, {
+              slidesToScroll: 1,
+              slidesVisible: 4,
+              loop: false
+            })
+          }
+        })
     })
   }
 }

@@ -29,3 +29,8 @@ En cours de développement, installation non recommandée.
 Necessite le serveur local d'API : OCMovies-API @/OpenClassrooms-Student-Center/OCMovies-API-EN-FR.git
 Base : JS sous firefox 96, Fetch, CSS3, HTML5,  
 Encore aucun babel-polyfill appliqué
+
+
+## Credits
+
+Thx to the course given with 'Art' by Jonathan ; credits to @grafikart.fr
