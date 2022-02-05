@@ -34,6 +34,7 @@ class Carousel {
     this.moveCallBacks.forEach(cb => cb(0))
     this.onWindowResize()
     window.addEventListener('resize', this.onWindowResize.bind(this))
+    // be accessible to keyboard's addicts
     this.root.addEventListener('keyup', e => {
       if (e.key === "ArrowRight" || e.key === "Right") {
         debugger

@@ -31,6 +31,7 @@
   font-weight: bold;
   text-align: start;
   color: gray;
+  width: 60%;
 }
 
 .carousel {
@@ -50,8 +51,10 @@
   float: left;
 }
 .carousel__item img {
+  display:block;
   width: 85%;
   margin: auto;
+  height: auto;
 }
 .carousel__item img:focus, .carousel__item img:hover {
   transform: scale(1.1);
@@ -65,7 +68,7 @@
   background-size: 30px 30px;
   border-radius: 50%;
   /* put the arrow button where it is smart to use */
-  top: 50%;
+  /* top: 50%; */
   margin-top: -15px;
   right: -5px;
   cursor: pointer;
