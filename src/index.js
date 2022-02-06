@@ -105,7 +105,7 @@ class Carousel {
 
   }
 
-   onMove(cb) {
+  onMove(cb) {
     this.moveCallBacks.push(cb)
   }
 
@@ -118,7 +118,7 @@ class Carousel {
     this.moveCallBacks.forEach(cb => cb(this.currentItem))
   }
 
-   createDivWithClass(className) {
+  createDivWithClass(className) {
     let div = document.createElement("div")
     div.setAttribute("class", className)
     return div
@@ -225,7 +225,6 @@ let createFull = function createMovie(movieUrl) {
 }
 
 
-
 let checkApiServer = async function () {
   try {
     let responseCheck = await fetch(baseUrl);
@@ -293,9 +292,63 @@ let buildCarouselChildren = async (carouselAnchorChild, childrenListElement) => 
   carouselAnchorChild.appendChild(newEltImg);
 }
 
+/** add text & API retrieved value to the modal 
+ * 
+ *   */
+function addElementToModal(movieModalId, modalAnchor, texte, valeur, type) {
+  // @now :TODO
+
+  if (type == 'content') {
+    let newModalElement = document.createElement('p');
+    newModalElement.setAttribute("id", movieModalId);
+    newModalElement.textContent = texte + valeur;
+    modalAnchor.appendChild(newModalElement);
+
+  }
+  if (type == 'image') {
+    let newModalElement = document.createElement('img');
+    newModalElement.alt = texte;
+    newModalElement.src = valeur;
+    modalAnchor.appendChild(newModalElement);
+
+  }
+  if (type == 'hidden') {
+    let newModalElement = document.createElement('p');
+    newModalElement.setAttribute("id", movieModalId);
+    newModalElement.hidden = true;
+    modalAnchor.appendChild(newModalElement);
+
+  }
+}
+
+
+let buildMovieModal = async (modalAnchor, movieModalId) => {
+  const modalMovie = await createFull(titleUrl + movieModalId);
+  // debugger
+  addElementToModal(movieModalId, modalAnchor, 'texte', modalMovie.id, "hidden");
+  addElementToModal(movieModalId, modalAnchor, 'texte', modalMovie.url, "hidden");
+  addElementToModal(movieModalId, modalAnchor, 'poster du film original', modalMovie.image_url, "image");
+  addElementToModal(movieModalId, modalAnchor, 'Titre: ', modalMovie.title, "content");
+  addElementToModal(movieModalId, modalAnchor, 'Catégorie(s): ', modalMovie.genres, "content");
+  addElementToModal(movieModalId, modalAnchor, 'Date de sortie: ', modalMovie.date_published, "content");
+  
+  addElementToModal(movieModalId, modalAnchor, 'Classé: ', modalMovie.rated, "content");
+  addElementToModal(movieModalId, modalAnchor, 'Score imdb: ', modalMovie.imdb_score, "content");
+  addElementToModal(movieModalId, modalAnchor, 'Réalisateurs(.e.s): ', modalMovie.directors, "content");
+  addElementToModal(movieModalId, modalAnchor, 'Acteur(.e.s):', modalMovie.actors, "content");
+  addElementToModal(movieModalId, modalAnchor, 'Durée (min): ', modalMovie.duration, "content");
+  addElementToModal(movieModalId, modalAnchor, 'Pays: ', modalMovie.countries, "content");
+  addElementToModal(movieModalId, modalAnchor, 'Résumé: ', modalMovie.description, "content");
+  if (modalMovie.worldwide_gross_income != null) {
+    addElementToModal(movieModalId, modalAnchor, 'Chiffre d\'affaire: ', modalMovie.worldwide_gross_income, "content");
+
+  }
+
+
+}
 
 /**
- * @function
+ * @functmodalAnchor, ion
  * collects as many as set movies IDs for the listed genres 
  * with async fetch while condition can't depend on promise, therefore:
  * 6 genres + 1 best per 7 
@@ -310,7 +363,7 @@ let buildDocumentElements = async () => {
     let newEltParent = document.createElement("div");
     newEltParent.setAttribute("class", 'carousel-parent');
     newEltParent.setAttribute("id", categoryCurrent);
-    newEltParent.textContent =  categoryCurrent;
+    newEltParent.textContent = categoryCurrent;
     carouselAnchor.appendChild(newEltParent);
     let carouselAnchorChild = document.querySelector("#" + categoryCurrent);
     // debugger
@@ -321,14 +374,27 @@ let buildDocumentElements = async () => {
   }
 }
 
+
+
+let test = async () => {
+  const a = await createFull(bestMovieUrl);
+  console.log('retrieve a full movie object:', a);
+};
+
+
+
+// Main section
 const carouselAnchor = document.querySelector(".best-section");
 let baseUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score";
-let bestFilmUrl = "http://localhost:8000/api/v1/titles/1508669";
+let bestMovieUrl = "http://localhost:8000/api/v1/titles/1508669";
 let bestCategory = 'Best'
 let categorieList = [bestCategory, 'Fantasy', 'Action', 'Thriller', 'Crime', 'Sci-Fi', 'Western'];
 let numberOfMoviesPerCategoryToShow = 7;
 /** @type {category:MovieLight[]}  [{'Fantasy': [MovieLight()...]}]*/
 let moviesObject = {}
+/** Modal information  */
+let titleUrl = "http://localhost:8000/api/v1/titles/";
+const modalAnchor = document.querySelector(".hero-section");
 
 
 
@@ -336,7 +402,7 @@ checkApiServer().then((success) => {
   if (success) {
     retrieveSortedMovies().then(() => {
       buildDocumentElements()
-        .then(async  () => {
+        .then(async () => {
           // anchor is of class 'carousel-parent' and id the 'category' value
           // We loop thru categories to set anchors & build carousel
           for await (let categoryCurrent of categorieList) {
@@ -347,6 +413,9 @@ checkApiServer().then((success) => {
               loop: false
             })
           }
+          // is it worth to use a full object for a modal display?
+          test();
+          buildMovieModal(modalAnchor, 1508669);
         })
     })
   }
