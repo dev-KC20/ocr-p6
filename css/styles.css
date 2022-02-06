@@ -119,11 +119,41 @@
 }
 
 /* modal by grafikart */
+.body, .html {
+  /* pour retirer les valeurs imposées par les navigateurs */
+  margin:0;
+  padding:0;
+}
+
+/* padding pris en compte dans le calcul des largeurs pour tous les élements */
+*{
+  box-sizing: border-box;
+}
 .modal {
+  /* modal prend toute la place */
   position:fixed;
   top:0;
   left:0;
   width:100%;
   height:100%;
-  background: rgba(0,0,0,0.8);
+  /* pour centrer la boite modal, flexbox */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* rendre le contenu sous modal moins visible */
+  background: rgba(0,0,0,0.6);
+}
+
+/* le conteneur des informations */
+.modal-wrapper {
+  /* faire apparaitre scroll sur périphérique de petite taille */
+  overflow: auto;
+  width:600px;
+  /* pour que le contenu ne débordre pas selon la taille du type d'écran responsive */
+max-width:  calc(100vw-20px);
+max-height:  calc(100vh-20px);
+  /* pour aérer le contenu dans le wrapper */
+  padding: 20px;
+  /* fond de couleur blanche */
+  background: white;
 }

@@ -292,15 +292,60 @@ let buildCarouselChildren = async (carouselAnchorChild, childrenListElement) => 
   carouselAnchorChild.appendChild(newEltImg);
 }
 
-/** add text & API retrieved value to the modal 
- * 
- *   */
+
+/** Modal Section */
+
+
+const openModal = function (e) 
+{
+  /* disable the click to operate we only want the ref*/
+  e.preventDefault();
+  /**  get the related id of the modal */
+  const target = document.querySelector(e.target.getAttribute('href'));
+  /**  remove the previous hidden value of display */
+  target.style.display = null;
+  /**  to be closed sooner or later */
+  currentModal = target;
+  currentModal.addEventListener('click', closeModal);
+  currentModal.querySelector('.js-modal-close').addEventListener('click', closeModal)
+  /** only click out of the wrapper will close the modal */
+  currentModal.querySelector('.js-modal-stop').addEventListener('click',stopPropagation)
+}
+
+const closeModal = function (e) 
+{
+  if (currentModal === null) return
+  /* disable the click to operate we only want the ref*/
+  e.preventDefault();
+  /**  remove the previous hidden value of display */
+  currentModal.style.display = "none";
+  /**  to be closed sooner or later */
+  currentModal.removeEventListener('click', closeModal)
+  currentModal.querySelector('.js-modal-close').removeEventListener('click',closeModal)
+  currentModal.querySelector('.js-modal-stop').removeEventListener('click',stopPropagation)
+  currentModal = null;
+}
+
+
+const stopPropagation = function (e) {
+  e.stopPropagation();
+}
+
+/**
+ * add text & API retrieved value to the modal 
+ *
+ * @param {*} movieModalId
+ * @param {*} modalAnchor
+ * @param {*} texte
+ * @param {*} valeur
+ * @param {*} type
+ */
 function addElementToModal(movieModalId, modalAnchor, texte, valeur, type) {
   // @now :TODO
 
   if (type == 'content') {
     let newModalElement = document.createElement('p');
-    newModalElement.setAttribute("id", movieModalId);
+    newModalElement.setAttribute("id", "modal" + movieModalId);
     newModalElement.textContent = texte + valeur;
     modalAnchor.appendChild(newModalElement);
 
@@ -325,23 +370,47 @@ function addElementToModal(movieModalId, modalAnchor, texte, valeur, type) {
 let buildMovieModal = async (modalAnchor, movieModalId) => {
   const modalMovie = await createFull(titleUrl + movieModalId);
   // debugger
-  addElementToModal(movieModalId, modalAnchor, 'texte', modalMovie.id, "hidden");
-  addElementToModal(movieModalId, modalAnchor, 'texte', modalMovie.url, "hidden");
-  addElementToModal(movieModalId, modalAnchor, 'poster du film original', modalMovie.image_url, "image");
-  addElementToModal(movieModalId, modalAnchor, 'Titre: ', modalMovie.title, "content");
-  addElementToModal(movieModalId, modalAnchor, 'Catégorie(s): ', modalMovie.genres, "content");
-  addElementToModal(movieModalId, modalAnchor, 'Date de sortie: ', modalMovie.date_published, "content");
-  
-  addElementToModal(movieModalId, modalAnchor, 'Classé: ', modalMovie.rated, "content");
-  addElementToModal(movieModalId, modalAnchor, 'Score imdb: ', modalMovie.imdb_score, "content");
-  addElementToModal(movieModalId, modalAnchor, 'Réalisateurs(.e.s): ', modalMovie.directors, "content");
-  addElementToModal(movieModalId, modalAnchor, 'Acteur(.e.s):', modalMovie.actors, "content");
-  addElementToModal(movieModalId, modalAnchor, 'Durée (min): ', modalMovie.duration, "content");
-  addElementToModal(movieModalId, modalAnchor, 'Pays: ', modalMovie.countries, "content");
-  addElementToModal(movieModalId, modalAnchor, 'Résumé: ', modalMovie.description, "content");
-  if (modalMovie.worldwide_gross_income != null) {
-    addElementToModal(movieModalId, modalAnchor, 'Chiffre d\'affaire: ', modalMovie.worldwide_gross_income, "content");
+  // call to modal & modal class
+  let newModalCall = document.createElement('a');
+  newModalCall.href = "#modal" + movieModalId;
+  newModalCall.setAttribute("id", movieModalId);
+  newModalCall.setAttribute("class", 'js-modal');
+  newModalCall.textContent = "Plus d'information.";
+  // modalAnchor.appendChild(newModalCall);
+  modalAnchor.appendChild(newModalCall);
 
+  let newModalClass = document.createElement('aside');
+  newModalClass.setAttribute("id", movieModalId);
+  newModalClass.setAttribute("class", 'modal');
+  newModalClass.style.display = 'none';
+  modalAnchor.appendChild(newModalClass);
+  // container for modal
+  let newModalContainer = document.createElement('div');
+  newModalContainer.setAttribute("class", 'modal-wrapper js-modal-stop');
+  newModalClass.appendChild(newModalContainer);
+  // buton to close the container 
+  let newModalCloseButton = document.createElement('button');
+  newModalCloseButton.textContent = "Fermer.";
+  newModalCloseButton.setAttribute("class", 'js-modal-close');
+  newModalContainer.appendChild(newModalCloseButton);
+  // details of Modal
+  addElementToModal(movieModalId, newModalContainer, 'texte', modalMovie.id, "hidden");
+  addElementToModal(movieModalId, newModalContainer, 'texte', modalMovie.url, "hidden");
+  addElementToModal(movieModalId, newModalContainer, 'poster du film original', modalMovie.image_url, "image");
+  addElementToModal(movieModalId, newModalContainer, 'Titre: ', modalMovie.title, "content");
+  addElementToModal(movieModalId, newModalContainer, 'Catégorie(s): ', modalMovie.genres, "content");
+  addElementToModal(movieModalId, newModalContainer, 'Date de sortie: ', modalMovie.date_published, "content");
+
+  addElementToModal(movieModalId, newModalContainer, 'Classé: ', modalMovie.rated, "content");
+  addElementToModal(movieModalId, newModalContainer, 'Score imdb: ', modalMovie.imdb_score, "content");
+  addElementToModal(movieModalId, newModalContainer, 'Réalisateurs(.e.s): ', modalMovie.directors, "content");
+  addElementToModal(movieModalId, newModalContainer, 'Acteur(.e.s):', modalMovie.actors, "content");
+  addElementToModal(movieModalId, newModalContainer, 'Durée (min): ', modalMovie.duration, "content");
+  addElementToModal(movieModalId, newModalContainer, 'Pays: ', modalMovie.countries, "content");
+  addElementToModal(movieModalId, newModalContainer, 'Résumé: ', modalMovie.description, "content");
+  if (modalMovie.worldwide_gross_income != null) {
+    addElementToModal(movieModalId, newModalContainer, 'Chiffre d\'affaire: ', modalMovie.worldwide_gross_income, "content");
+debugger
   }
 
 
@@ -376,11 +445,6 @@ let buildDocumentElements = async () => {
 
 
 
-let test = async () => {
-  const a = await createFull(bestMovieUrl);
-  console.log('retrieve a full movie object:', a);
-};
-
 
 
 // Main section
@@ -395,6 +459,8 @@ let moviesObject = {}
 /** Modal information  */
 let titleUrl = "http://localhost:8000/api/v1/titles/";
 const modalAnchor = document.querySelector(".hero-section");
+/** keep track of the reference of currently open modal */
+let currentModal = null;
 
 
 
@@ -413,9 +479,16 @@ checkApiServer().then((success) => {
               loop: false
             })
           }
-          // is it worth to use a full object for a modal display?
-          test();
           buildMovieModal(modalAnchor, 1508669);
+          /** select Elements with modal to open */
+          document.querySelectorAll('.js-modal').forEach(a => {
+            /** and listen for click */
+            debugger
+            a.addEventListener('click', openModal);
+
+          }
+
+          )
         })
     })
   }
