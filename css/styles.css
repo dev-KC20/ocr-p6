@@ -119,11 +119,12 @@
 }
 
 /* modal by grafikart */
-.body, .html {
-  /* pour retirer les valeurs imposées par les navigateurs */
+
+/* pour retirer les valeurs imposées par les navigateurs */
+/* .body, .html {
   margin:0;
   padding:0;
-}
+} */
 
 /* padding pris en compte dans le calcul des largeurs pour tous les élements */
 *{
@@ -151,7 +152,7 @@
   width:600px;
   /* pour que le contenu ne débordre pas selon la taille du type d'écran responsive */
 max-width:  calc(100vw-20px);
-max-height:  calc(100vh-20px);
+max-height:  calc(100vh-5px);
   /* pour aérer le contenu dans le wrapper */
   padding: 20px;
   /* fond de couleur blanche */

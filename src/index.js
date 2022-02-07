@@ -296,12 +296,12 @@ let buildCarouselChildren = async (carouselAnchorChild, childrenListElement) => 
 /** Modal Section */
 
 
-const openModal = function (e) 
-{
+const openModal = function (e) {
   /* disable the click to operate we only want the ref*/
   e.preventDefault();
   /**  get the related id of the modal */
   const target = document.querySelector(e.target.getAttribute('href'));
+  console.log('target modal', target);
   /**  remove the previous hidden value of display */
   target.style.display = null;
   /**  to be closed sooner or later */
@@ -309,11 +309,10 @@ const openModal = function (e)
   currentModal.addEventListener('click', closeModal);
   currentModal.querySelector('.js-modal-close').addEventListener('click', closeModal)
   /** only click out of the wrapper will close the modal */
-  currentModal.querySelector('.js-modal-stop').addEventListener('click',stopPropagation)
+  currentModal.querySelector('.js-modal-stop').addEventListener('click', stopPropagation)
 }
 
-const closeModal = function (e) 
-{
+const closeModal = function (e) {
   if (currentModal === null) return
   /* disable the click to operate we only want the ref*/
   e.preventDefault();
@@ -321,8 +320,8 @@ const closeModal = function (e)
   currentModal.style.display = "none";
   /**  to be closed sooner or later */
   currentModal.removeEventListener('click', closeModal)
-  currentModal.querySelector('.js-modal-close').removeEventListener('click',closeModal)
-  currentModal.querySelector('.js-modal-stop').removeEventListener('click',stopPropagation)
+  currentModal.querySelector('.js-modal-close').removeEventListener('click', closeModal)
+  currentModal.querySelector('.js-modal-stop').removeEventListener('click', stopPropagation)
   currentModal = null;
 }
 
@@ -345,7 +344,7 @@ function addElementToModal(movieModalId, modalAnchor, texte, valeur, type) {
 
   if (type == 'content') {
     let newModalElement = document.createElement('p');
-    newModalElement.setAttribute("id", "modal" + movieModalId);
+    // newModalElement.setAttribute("id", "modal" + movieModalId);
     newModalElement.textContent = texte + valeur;
     modalAnchor.appendChild(newModalElement);
 
@@ -372,15 +371,17 @@ let buildMovieModal = async (modalAnchor, movieModalId) => {
   // debugger
   // call to modal & modal class
   let newModalCall = document.createElement('a');
+  // href points to the aside modal elements
   newModalCall.href = "#modal" + movieModalId;
   newModalCall.setAttribute("id", movieModalId);
+  // js-modal pour ajout event listener au click openModal 
   newModalCall.setAttribute("class", 'js-modal');
   newModalCall.textContent = "Plus d'information.";
   // modalAnchor.appendChild(newModalCall);
   modalAnchor.appendChild(newModalCall);
 
   let newModalClass = document.createElement('aside');
-  newModalClass.setAttribute("id", movieModalId);
+  newModalClass.setAttribute("id", "modal"+ movieModalId);
   newModalClass.setAttribute("class", 'modal');
   newModalClass.style.display = 'none';
   modalAnchor.appendChild(newModalClass);
@@ -394,8 +395,8 @@ let buildMovieModal = async (modalAnchor, movieModalId) => {
   newModalCloseButton.setAttribute("class", 'js-modal-close');
   newModalContainer.appendChild(newModalCloseButton);
   // details of Modal
-  addElementToModal(movieModalId, newModalContainer, 'texte', modalMovie.id, "hidden");
-  addElementToModal(movieModalId, newModalContainer, 'texte', modalMovie.url, "hidden");
+  // addElementToModal(movieModalId, newModalContainer, 'texte', modalMovie.id, "hidden");
+  // addElementToModal(movieModalId, newModalContainer, 'texte', modalMovie.url, "hidden");
   addElementToModal(movieModalId, newModalContainer, 'poster du film original', modalMovie.image_url, "image");
   addElementToModal(movieModalId, newModalContainer, 'Titre: ', modalMovie.title, "content");
   addElementToModal(movieModalId, newModalContainer, 'Catégorie(s): ', modalMovie.genres, "content");
@@ -410,7 +411,6 @@ let buildMovieModal = async (modalAnchor, movieModalId) => {
   addElementToModal(movieModalId, newModalContainer, 'Résumé: ', modalMovie.description, "content");
   if (modalMovie.worldwide_gross_income != null) {
     addElementToModal(movieModalId, newModalContainer, 'Chiffre d\'affaire: ', modalMovie.worldwide_gross_income, "content");
-debugger
   }
 
 
@@ -424,7 +424,7 @@ debugger
  * the OCMovies-API supplies 5 items per pages
  * at least 2 pages will be loaded
  * loop of parallel getters
- */
+*/
 let buildDocumentElements = async () => {
   // const carouselAnchor = document.querySelector(".best-section");
   for (let categoryCurrent of categorieList) {
@@ -462,35 +462,41 @@ const modalAnchor = document.querySelector(".hero-section");
 /** keep track of the reference of currently open modal */
 let currentModal = null;
 
+let showCarousel = false;
 
 
 checkApiServer().then((success) => {
   if (success) {
-    retrieveSortedMovies().then(() => {
-      buildDocumentElements()
-        .then(async () => {
-          // anchor is of class 'carousel-parent' and id the 'category' value
-          // We loop thru categories to set anchors & build carousel
-          for await (let categoryCurrent of categorieList) {
-            let bestCategoryAnchor = document.querySelector(".best-section #" + categoryCurrent + ".carousel-parent");
-            new Carousel(bestCategoryAnchor, {
-              slidesToScroll: 1,
-              slidesVisible: 4,
-              loop: false
-            })
-          }
-          buildMovieModal(modalAnchor, 1508669);
-          /** select Elements with modal to open */
-          document.querySelectorAll('.js-modal').forEach(a => {
-            /** and listen for click */
-            debugger
-            a.addEventListener('click', openModal);
+    if (showCarousel) {
+      retrieveSortedMovies().then(() => {
+        buildDocumentElements()
+          .then(async () => {
+            // anchor is of class 'carousel-parent' and id the 'category' value
+            // We loop thru categories to set anchors & build carousel
+            for await (let categoryCurrent of categorieList) {
+              let bestCategoryAnchor = document.querySelector(".best-section #" + categoryCurrent + ".carousel-parent");
+              new Carousel(bestCategoryAnchor, {
+                slidesToScroll: 1,
+                slidesVisible: 4,
+                loop: false
+              })
+            }
 
-          }
+          })
+      })
+    }
+    buildMovieModal(modalAnchor, 1508669).then(() => {
 
-          )
-        })
-    })
+      /** select a elements with modal to open */
+      // debugger
+      document.querySelectorAll('.js-modal').forEach(a => {
+        /** and listen for click */
+        console.log('lien', a.textContent)
+        a.addEventListener('click', openModal);
+      }
+      )
+
+    });
   }
 }
 )
