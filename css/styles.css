@@ -5,9 +5,9 @@
   font-family: "system-ui";
   color: black;
 }
-.header > p:nth-child(1){
+.header > p:nth-child(1) {
   display: flex;
-  justify-content:center;
+  justify-content: center;
   max-width: 100%;
   height: auto;
 }
@@ -51,20 +51,22 @@
   float: left;
 }
 .carousel__item img {
-  display:block;
+  display: block;
   width: 85%;
   margin: auto;
   height: auto;
 }
-.carousel__item img:focus, .carousel__item img:hover {
+.carousel__item img:focus,
+.carousel__item img:hover {
   transform: scale(1.1);
 }
 
-.carousel__next, .carousel__prev {
+.carousel__next,
+.carousel__prev {
   position: absolute;
   width: 40px;
   height: 40px;
-  background: #FFF url(../assets/chevron-right.svg) center center no-repeat;
+  background: #fff url(../assets/chevron-right.svg) center center no-repeat;
   background-size: 30px 30px;
   border-radius: 50%;
   /* put the arrow button where it is smart to use */
@@ -74,10 +76,12 @@
   cursor: pointer;
   transition: transform 0.3s, opacity 0.3s;
 }
-.carousel__next:hover, .carousel__prev:hover {
+.carousel__next:hover,
+.carousel__prev:hover {
   transform: scale(1.2);
 }
-.carousel__next--hidden, .carousel__prev--hidden {
+.carousel__next--hidden,
+.carousel__prev--hidden {
   opacity: 0;
 }
 
@@ -127,34 +131,73 @@
 } */
 
 /* padding pris en compte dans le calcul des largeurs pour tous les élements */
-*{
+* {
   box-sizing: border-box;
 }
+
+*:focus {
+  box-shadow: 0 0 10px blue;
+}
+
 .modal {
   /* modal prend toute la place */
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+  position: fixed;
   /* pour centrer la boite modal, flexbox */
   display: flex;
   align-items: center;
   justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   /* rendre le contenu sous modal moins visible */
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
 }
 
 /* le conteneur des informations */
 .modal-wrapper {
   /* faire apparaitre scroll sur périphérique de petite taille */
   overflow: auto;
-  width:600px;
+  width: 600px;
   /* pour que le contenu ne débordre pas selon la taille du type d'écran responsive */
-max-width:  calc(100vw-20px);
-max-height:  calc(100vh-5px);
+  max-width: calc(100vw-20px);
+  max-height: 80vh;
+  /* max-height: calc(100vh-20px); */
   /* pour aérer le contenu dans le wrapper */
   padding: 20px;
   /* fond de couleur blanche */
   background: white;
+}
+
+.modal-header{
+  font-size: 40px; 
+}
+.modal-info{
+  margin-top: 0px;
+  overflow: auto;
+  position: relative;
+}
+
+.modal-info > img:nth-child(1) {
+  float: left; 
+  margin: 5px;
+  
+}
+
+.modal-info > p:nth-child(2) {
+  margin-top: 10px;
+}
+
+.modal-info p {
+  font-weight:bold
+}
+/* 
+.modal-info a {
+  font-size: 25px; 
+} */
+.modal-details{
+  margin-top: 20px;
+}
+.modal-details p {
+  font-weight:bold
 }

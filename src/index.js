@@ -344,9 +344,11 @@ function addElementToModal(movieModalId, modalAnchor, texte, valeur, type) {
 
   if (type == 'content') {
     let newModalElement = document.createElement('p');
-    // newModalElement.setAttribute("id", "modal" + movieModalId);
-    newModalElement.textContent = texte + valeur;
+    newModalElement.textContent = texte;
     modalAnchor.appendChild(newModalElement);
+    let newModalElementContent = document.createElement('a');
+    newModalElementContent.textContent = valeur;
+    modalAnchor.appendChild(newModalElementContent);
 
   }
   if (type == 'image') {
@@ -389,31 +391,39 @@ let buildMovieModal = async (modalAnchor, movieModalId) => {
   let newModalContainer = document.createElement('div');
   newModalContainer.setAttribute("class", 'modal-wrapper js-modal-stop');
   newModalClass.appendChild(newModalContainer);
-  // buton to close the container 
+  // Modal header
+  let newModalHeader = document.createElement('div');
+  newModalHeader.setAttribute("class", 'modal-header');
+  newModalContainer.appendChild(newModalHeader);
+  addElementToModal(movieModalId, newModalHeader, '', modalMovie.title, "content");
+  
+  // Modal info
+  let newModalInfo = document.createElement('div');
+  newModalInfo.setAttribute("class", 'modal-info');
+  newModalContainer.appendChild(newModalInfo);
+  addElementToModal(movieModalId, newModalInfo, 'poster du film original', modalMovie.image_url, "image");
+  addElementToModal(movieModalId, newModalInfo, 'Catégorie(s): ', modalMovie.genres, "content");
+  addElementToModal(movieModalId, newModalInfo, 'Date de sortie: ', modalMovie.date_published, "content");
+  addElementToModal(movieModalId, newModalInfo, 'Score imdb: ', modalMovie.imdb_score, "content");
+  addElementToModal(movieModalId, newModalInfo, 'Durée (min): ', modalMovie.duration, "content");
+  addElementToModal(movieModalId, newModalInfo, 'Pays: ', modalMovie.countries, "content");
+  addElementToModal(movieModalId, newModalInfo, 'Classé: ', modalMovie.rated, "content");
+  
+  // Modal details
+  let newModalDetails = document.createElement('div');
+  newModalDetails.setAttribute("class", 'modal-details');
+  newModalContainer.appendChild(newModalDetails);
+  addElementToModal(movieModalId, newModalDetails, 'Réalisateurs(.e.s): ', modalMovie.directors, "content");
+  addElementToModal(movieModalId, newModalDetails, 'Acteur(.e.s):', modalMovie.actors, "content");
+  addElementToModal(movieModalId, newModalDetails, 'Résumé: ', modalMovie.description, "content");
+  if (modalMovie.worldwide_gross_income != null) {
+    addElementToModal(movieModalId, newModalDetails, 'Chiffre d\'affaire: ', modalMovie.worldwide_gross_income, "content");
+  }
+  // button to close the container 
   let newModalCloseButton = document.createElement('button');
   newModalCloseButton.textContent = "Fermer.";
   newModalCloseButton.setAttribute("class", 'js-modal-close');
-  newModalContainer.appendChild(newModalCloseButton);
-  // details of Modal
-  // addElementToModal(movieModalId, newModalContainer, 'texte', modalMovie.id, "hidden");
-  // addElementToModal(movieModalId, newModalContainer, 'texte', modalMovie.url, "hidden");
-  addElementToModal(movieModalId, newModalContainer, 'poster du film original', modalMovie.image_url, "image");
-  addElementToModal(movieModalId, newModalContainer, 'Titre: ', modalMovie.title, "content");
-  addElementToModal(movieModalId, newModalContainer, 'Catégorie(s): ', modalMovie.genres, "content");
-  addElementToModal(movieModalId, newModalContainer, 'Date de sortie: ', modalMovie.date_published, "content");
-
-  addElementToModal(movieModalId, newModalContainer, 'Classé: ', modalMovie.rated, "content");
-  addElementToModal(movieModalId, newModalContainer, 'Score imdb: ', modalMovie.imdb_score, "content");
-  addElementToModal(movieModalId, newModalContainer, 'Réalisateurs(.e.s): ', modalMovie.directors, "content");
-  addElementToModal(movieModalId, newModalContainer, 'Acteur(.e.s):', modalMovie.actors, "content");
-  addElementToModal(movieModalId, newModalContainer, 'Durée (min): ', modalMovie.duration, "content");
-  addElementToModal(movieModalId, newModalContainer, 'Pays: ', modalMovie.countries, "content");
-  addElementToModal(movieModalId, newModalContainer, 'Résumé: ', modalMovie.description, "content");
-  if (modalMovie.worldwide_gross_income != null) {
-    addElementToModal(movieModalId, newModalContainer, 'Chiffre d\'affaire: ', modalMovie.worldwide_gross_income, "content");
-  }
-
-
+  newModalDetails.appendChild(newModalCloseButton);
 }
 
 /**
