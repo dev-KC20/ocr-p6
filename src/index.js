@@ -37,7 +37,6 @@ class Carousel {
     // be accessible to keyboard's addicts
     this.root.addEventListener('keyup', e => {
       if (e.key === "ArrowRight" || e.key === "Right") {
-        debugger
         this.next()
       } else if (e.key === "ArrowLeft" || e.key === "Left") {
         this.prev()
@@ -286,10 +285,14 @@ let buildCarouselChildren = async (carouselAnchorChild, childrenListElement) => 
   newEltChild.setAttribute("class", 'carousel-child');
   newEltChild.setAttribute("id", childrenListElement['id']);
   carouselAnchorChild.appendChild(newEltChild);
+  /** this img will become clickable to openModal */
   let newEltImg = document.createElement("img");
   newEltImg.src = childrenListElement.image_url;
   newEltImg.setAttribute("id", childrenListElement['id']);
+  newEltImg.setAttribute("class", "js-modal");
   carouselAnchorChild.appendChild(newEltImg);
+  /** the modal is created with the Child but attached to a global Anchor modal-section */
+  await buildMovieModal(modalAnchor, childrenListElement['id']);
 }
 
 
@@ -299,9 +302,17 @@ let buildCarouselChildren = async (carouselAnchorChild, childrenListElement) => 
 const openModal = function (e) {
   /* disable the click to operate we only want the ref*/
   e.preventDefault();
-  /**  get the related id of the modal */
-  const target = document.querySelector(e.target.getAttribute('href'));
-  console.log('target modal', target);
+  /**  get the related id of the modal 
+   * if img of carousel or a element : the id is in attribute id
+   * if button : the id is ...
+  */
+
+  console.log('target modal0', e.target);
+  console.log('target modal1', "#modal" + e.target.getAttribute('id'));
+  const target = document.querySelector("#modal" + e.target.getAttribute('id'))
+  console.log('target modal2', target);
+  // /** the modal doesn't exist the first time it is clicked */
+  // buildMovieModal(modalAnchor, e.target.getAttribute('id'))
   /**  remove the previous hidden value of display */
   target.style.display = null;
   /**  to be closed sooner or later */
@@ -371,19 +382,19 @@ function addElementToModal(movieModalId, modalAnchor, texte, valeur, type) {
 let buildMovieModal = async (modalAnchor, movieModalId) => {
   const modalMovie = await createFull(titleUrl + movieModalId);
   // debugger
-  // call to modal & modal class
-  let newModalCall = document.createElement('a');
-  // href points to the aside modal elements
-  newModalCall.href = "#modal" + movieModalId;
-  newModalCall.setAttribute("id", movieModalId);
-  // js-modal pour ajout event listener au click openModal 
-  newModalCall.setAttribute("class", 'js-modal');
-  newModalCall.textContent = "Plus d'information.";
+  // // call to modal & modal class
+  // let newModalCall = document.createElement('button');
+  // // href points to the aside modal elements
+  // newModalCall.href = "#modal" + movieModalId;
+  // newModalCall.setAttribute("id", movieModalId);
+  // // js-modal pour ajout event listener au click openModal 
+  // newModalCall.setAttribute("class", "js-modal");
+  // newModalCall.textContent = "Plus d'information.";
+  // // modalAnchor.appendChild(newModalCall);
   // modalAnchor.appendChild(newModalCall);
-  modalAnchor.appendChild(newModalCall);
 
   let newModalClass = document.createElement('aside');
-  newModalClass.setAttribute("id", "modal"+ movieModalId);
+  newModalClass.setAttribute("id", "modal" + movieModalId);
   newModalClass.setAttribute("class", 'modal');
   newModalClass.style.display = 'none';
   modalAnchor.appendChild(newModalClass);
@@ -396,7 +407,7 @@ let buildMovieModal = async (modalAnchor, movieModalId) => {
   newModalHeader.setAttribute("class", 'modal-header');
   newModalContainer.appendChild(newModalHeader);
   addElementToModal(movieModalId, newModalHeader, '', modalMovie.title, "content");
-  
+
   // Modal info
   let newModalInfo = document.createElement('div');
   newModalInfo.setAttribute("class", 'modal-info');
@@ -408,7 +419,7 @@ let buildMovieModal = async (modalAnchor, movieModalId) => {
   addElementToModal(movieModalId, newModalInfo, 'Durée (min): ', modalMovie.duration, "content");
   addElementToModal(movieModalId, newModalInfo, 'Pays: ', modalMovie.countries, "content");
   addElementToModal(movieModalId, newModalInfo, 'Classé: ', modalMovie.rated, "content");
-  
+
   // Modal details
   let newModalDetails = document.createElement('div');
   newModalDetails.setAttribute("class", 'modal-details');
@@ -468,11 +479,12 @@ let numberOfMoviesPerCategoryToShow = 7;
 let moviesObject = {}
 /** Modal information  */
 let titleUrl = "http://localhost:8000/api/v1/titles/";
-const modalAnchor = document.querySelector(".hero-section");
+/** section of the document where the modal will be built */
+const modalAnchor = document.querySelector(".modal-section");
 /** keep track of the reference of currently open modal */
 let currentModal = null;
 
-let showCarousel = false;
+let showCarousel = true;
 
 
 checkApiServer().then((success) => {
@@ -493,20 +505,25 @@ checkApiServer().then((success) => {
             }
 
           })
+      }).then(() => {
+        
+        /** select img elements with modal to open */
+        // document.querySelectorAll(".js-modal").forEach(img => {
+        //   /** and listen for click */
+        //   img.addEventListener('click', openModal);
+        //   console.log('lien', img.id)
+    
+        // })
+        let modalClickElements = document.querySelectorAll(".js-modal");
+        console.log('all img to add click event to', document.querySelectorAll(".js-modal"));
+        for (modalClick of modalClickElements) {
+          modalClick.addEventListener('click', openModal);
+          console.log('lien', modalClick.id);
+        }
+
       })
     }
-    buildMovieModal(modalAnchor, 1508669).then(() => {
 
-      /** select a elements with modal to open */
-      // debugger
-      document.querySelectorAll('.js-modal').forEach(a => {
-        /** and listen for click */
-        console.log('lien', a.textContent)
-        a.addEventListener('click', openModal);
-      }
-      )
-
-    });
   }
 }
 )
