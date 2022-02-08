@@ -190,7 +190,6 @@ class Movie {
     this.countries = data.countries;
     this.description = data.description;
     this.worldwide_gross_income = data.worldwide_gross_income;
-    // debugger
     return this;
   }
 }
@@ -292,7 +291,7 @@ let buildCarouselChildren = async (carouselAnchorChild, childrenListElement, toH
     newEltImg.src = childrenListElement.image_url;
     newEltImg.setAttribute("id", childrenListElement['id']);
     newEltImg.setAttribute("class", "js-modal");
-    carouselAnchorChild.appendChild(newEltImg);
+    newEltChild.appendChild(newEltImg);
 
   }
   /** the modal is created with the Child but attached to a global Anchor modal-section */
@@ -450,7 +449,6 @@ let buildDocumentElements = async () => {
     newEltParent.textContent = categoryCurrent;
     carouselAnchor.appendChild(newEltParent);
     let carouselAnchorChild = document.querySelector("#" + categoryCurrent);
-    // debugger
     for (let move of moviesObject[categoryCurrent]) {
       let toHide = false;
       if (move == moviesObject[bestCategory][0]) {
@@ -496,7 +494,6 @@ let buildHero = async () => {
   const heroPlotMovie = await createFull(titleUrl + bestMovieId);
   let newHeroPlot = document.createElement('p');
   newHeroPlot.setAttribute("class", 'hero-plot');
-  console.log('resume:',heroPlotMovie)
   newHeroPlot.textContent = heroPlotMovie.description;
   newHeroParent.appendChild(newHeroPlot);
   
@@ -538,6 +535,7 @@ checkApiServer().then((success) => {
             // We loop thru categories to set anchors & build carousel
             for await (let categoryCurrent of categorieList) {
               let bestCategoryAnchor = document.querySelector(".best-section #" + categoryCurrent + ".carousel-parent");
+              // console.log('bestCategoryAnchor dooble?', bestCategoryAnchor);
               new Carousel(bestCategoryAnchor, {
                 slidesToScroll: 1,
                 slidesVisible: 4,
@@ -549,10 +547,8 @@ checkApiServer().then((success) => {
       }).then(() => {
 
         let modalClickElements = document.querySelectorAll(".js-modal");
-        console.log('all img to add click event to', document.querySelectorAll(".js-modal"));
         for (modalClick of modalClickElements) {
           modalClick.addEventListener('click', openModal);
-          // console.log('lien', modalClick.id);
         }
 
       })
