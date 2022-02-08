@@ -470,12 +470,12 @@ let buildHero = async () => {
   let newHeroParent = document.createElement("div");
   newHeroParent.setAttribute("class", 'hero-parent');
   newHeroParent.style.display = 'block';
+  // newHeroParent.style.backgroundImage = "url('"+ moviesObject[bestCategory][0].image_url +"')"
   /** remove the Best #1 from the list of bests & put it here only */
   newHeroParent.setAttribute("id", bestMovieId);
-  newHeroParent.textContent = "Film à l'affiche:";
+  newHeroParent.textContent = moviesObject[bestCategory][0].title;
   heroAnchor.appendChild(newHeroParent);
   /** add image Modal */
-  // let heroAnchorChild = document.querySelector("#" + bestMovieId);
   let newHeroChild = document.createElement('img');
   newHeroChild.setAttribute("class", 'hero-child');
   newHeroChild.alt = moviesObject[bestCategory][0].title;
@@ -486,12 +486,20 @@ let buildHero = async () => {
   /** add button to Modal */
   let newHeroButton = document.createElement('button');
   newHeroButton.textContent = "Plus d'information";
-  newHeroButton.setAttribute("class", 'hero-modal');
+  newHeroButton.setAttribute("class", 'hero-button');
   /** id is needed in order point to the target of evenlistener */
   newHeroButton.setAttribute("id", bestMovieId);
   newHeroParent.appendChild(newHeroButton);
   newHeroButton.addEventListener('click', openModal);
 
+  /** add  Plot which is only available in the fullMovie object */
+  const heroPlotMovie = await createFull(titleUrl + bestMovieId);
+  let newHeroPlot = document.createElement('p');
+  newHeroPlot.setAttribute("class", 'hero-plot');
+  console.log('resume:',heroPlotMovie)
+  newHeroPlot.textContent = heroPlotMovie.description;
+  newHeroParent.appendChild(newHeroPlot);
+  
 }
 
 
