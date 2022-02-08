@@ -26,6 +26,18 @@
   color: black;
 }
 
+/* The Best film hero image */
+.hero-child {
+
+  /* Set a specific height */
+  height: 50%;
+
+  /* Position and center the image to scale nicely on all screens */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
 .carousel-parent {
   font-size: 200%;
   font-weight: bold;

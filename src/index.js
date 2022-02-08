@@ -280,17 +280,21 @@ let retrieveSortedMovies = async function () {
   }
 }
 
-let buildCarouselChildren = async (carouselAnchorChild, childrenListElement) => {
-  let newEltChild = document.createElement("div");
-  newEltChild.setAttribute("class", 'carousel-child');
-  newEltChild.setAttribute("id", childrenListElement['id']);
-  carouselAnchorChild.appendChild(newEltChild);
-  /** this img will become clickable to openModal */
-  let newEltImg = document.createElement("img");
-  newEltImg.src = childrenListElement.image_url;
-  newEltImg.setAttribute("id", childrenListElement['id']);
-  newEltImg.setAttribute("class", "js-modal");
-  carouselAnchorChild.appendChild(newEltImg);
+let buildCarouselChildren = async (carouselAnchorChild, childrenListElement, toHide) => {
+  /** in case of the Best Movie, it should get its Modal built but its Carousel elt. should be hidden */
+  if (!toHide) {
+    let newEltChild = document.createElement("div");
+    newEltChild.setAttribute("class", 'carousel-child');
+    newEltChild.setAttribute("id", childrenListElement['id']);
+    carouselAnchorChild.appendChild(newEltChild);
+    /** this img will become clickable to openModal */
+    let newEltImg = document.createElement("img");
+    newEltImg.src = childrenListElement.image_url;
+    newEltImg.setAttribute("id", childrenListElement['id']);
+    newEltImg.setAttribute("class", "js-modal");
+    carouselAnchorChild.appendChild(newEltImg);
+
+  }
   /** the modal is created with the Child but attached to a global Anchor modal-section */
   await buildMovieModal(modalAnchor, childrenListElement['id']);
 }
@@ -381,17 +385,6 @@ function addElementToModal(movieModalId, modalAnchor, texte, valeur, type) {
 
 let buildMovieModal = async (modalAnchor, movieModalId) => {
   const modalMovie = await createFull(titleUrl + movieModalId);
-  // debugger
-  // // call to modal & modal class
-  // let newModalCall = document.createElement('button');
-  // // href points to the aside modal elements
-  // newModalCall.href = "#modal" + movieModalId;
-  // newModalCall.setAttribute("id", movieModalId);
-  // // js-modal pour ajout event listener au click openModal 
-  // newModalCall.setAttribute("class", "js-modal");
-  // newModalCall.textContent = "Plus d'information.";
-  // // modalAnchor.appendChild(newModalCall);
-  // modalAnchor.appendChild(newModalCall);
 
   let newModalClass = document.createElement('aside');
   newModalClass.setAttribute("id", "modal" + movieModalId);
@@ -412,23 +405,23 @@ let buildMovieModal = async (modalAnchor, movieModalId) => {
   let newModalInfo = document.createElement('div');
   newModalInfo.setAttribute("class", 'modal-info');
   newModalContainer.appendChild(newModalInfo);
-  addElementToModal(movieModalId, newModalInfo, 'poster du film original', modalMovie.image_url, "image");
-  addElementToModal(movieModalId, newModalInfo, 'Catégorie(s): ', modalMovie.genres, "content");
+  addElementToModal(movieModalId, newModalInfo, 'Poster original:', modalMovie.image_url, "image");
+  addElementToModal(movieModalId, newModalInfo, 'Genre: ', modalMovie.genres, "content");
   addElementToModal(movieModalId, newModalInfo, 'Date de sortie: ', modalMovie.date_published, "content");
   addElementToModal(movieModalId, newModalInfo, 'Score imdb: ', modalMovie.imdb_score, "content");
   addElementToModal(movieModalId, newModalInfo, 'Durée (min): ', modalMovie.duration, "content");
-  addElementToModal(movieModalId, newModalInfo, 'Pays: ', modalMovie.countries, "content");
-  addElementToModal(movieModalId, newModalInfo, 'Classé: ', modalMovie.rated, "content");
+  addElementToModal(movieModalId, newModalInfo, 'Pays d\'origine: ', modalMovie.countries, "content");
+  addElementToModal(movieModalId, newModalInfo, 'Rated: ', modalMovie.rated, "content");
 
   // Modal details
   let newModalDetails = document.createElement('div');
   newModalDetails.setAttribute("class", 'modal-details');
   newModalContainer.appendChild(newModalDetails);
-  addElementToModal(movieModalId, newModalDetails, 'Réalisateurs(.e.s): ', modalMovie.directors, "content");
+  addElementToModal(movieModalId, newModalDetails, 'Réalisateur(.e.s): ', modalMovie.directors, "content");
   addElementToModal(movieModalId, newModalDetails, 'Acteur(.e.s):', modalMovie.actors, "content");
   addElementToModal(movieModalId, newModalDetails, 'Résumé: ', modalMovie.description, "content");
   if (modalMovie.worldwide_gross_income != null) {
-    addElementToModal(movieModalId, newModalDetails, 'Chiffre d\'affaire: ', modalMovie.worldwide_gross_income, "content");
+    addElementToModal(movieModalId, newModalDetails, 'Résultat Box office: ', modalMovie.worldwide_gross_income, "content");
   }
   // button to close the container 
   let newModalCloseButton = document.createElement('button');
@@ -445,7 +438,7 @@ let buildMovieModal = async (modalAnchor, movieModalId) => {
  * the OCMovies-API supplies 5 items per pages
  * at least 2 pages will be loaded
  * loop of parallel getters
-*/
+ */
 let buildDocumentElements = async () => {
   // const carouselAnchor = document.querySelector(".best-section");
   for (let categoryCurrent of categorieList) {
@@ -453,15 +446,52 @@ let buildDocumentElements = async () => {
     let newEltParent = document.createElement("div");
     newEltParent.setAttribute("class", 'carousel-parent');
     newEltParent.setAttribute("id", categoryCurrent);
+
     newEltParent.textContent = categoryCurrent;
     carouselAnchor.appendChild(newEltParent);
     let carouselAnchorChild = document.querySelector("#" + categoryCurrent);
     // debugger
     for (let move of moviesObject[categoryCurrent]) {
+      let toHide = false;
+      if (move == moviesObject[bestCategory][0]) {
+        /** Best Movie the Carousel shall be hidden */
+        toHide = true;
 
-      const getChild = buildCarouselChildren(carouselAnchorChild, move);
+      }
+      const getChild = buildCarouselChildren(carouselAnchorChild, move, toHide);
     }
   }
+}
+let buildHero = async () => {
+  // const carouselAnchor = document.querySelector(".hero-section");
+  /** the best ever movie is to be retrieved & removed? from the best list */
+  bestMovieId = moviesObject[bestCategory][0].id;
+  console.log('bestMovieId buildHero', bestMovieId);
+  let newHeroParent = document.createElement("div");
+  newHeroParent.setAttribute("class", 'hero-parent');
+  newHeroParent.style.display = 'block';
+  /** remove the Best #1 from the list of bests & put it here only */
+  newHeroParent.setAttribute("id", bestMovieId);
+  newHeroParent.textContent = "Film à l'affiche:";
+  heroAnchor.appendChild(newHeroParent);
+  /** add image Modal */
+  // let heroAnchorChild = document.querySelector("#" + bestMovieId);
+  let newHeroChild = document.createElement('img');
+  newHeroChild.setAttribute("class", 'hero-child');
+  newHeroChild.alt = moviesObject[bestCategory][0].title;
+  newHeroChild.src = moviesObject[bestCategory][0].image_url;
+  /** id is needed in order point to the target of evenlistener */
+  newHeroChild.setAttribute("id", bestMovieId);
+  newHeroParent.appendChild(newHeroChild);
+  /** add button to Modal */
+  let newHeroButton = document.createElement('button');
+  newHeroButton.textContent = "Plus d'information";
+  newHeroButton.setAttribute("class", 'hero-modal');
+  /** id is needed in order point to the target of evenlistener */
+  newHeroButton.setAttribute("id", bestMovieId);
+  newHeroParent.appendChild(newHeroButton);
+  newHeroButton.addEventListener('click', openModal);
+
 }
 
 
@@ -471,7 +501,6 @@ let buildDocumentElements = async () => {
 // Main section
 const carouselAnchor = document.querySelector(".best-section");
 let baseUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score";
-let bestMovieUrl = "http://localhost:8000/api/v1/titles/1508669";
 let bestCategory = 'Best'
 let categorieList = [bestCategory, 'Fantasy', 'Action', 'Thriller', 'Crime', 'Sci-Fi', 'Western'];
 let numberOfMoviesPerCategoryToShow = 7;
@@ -481,6 +510,9 @@ let moviesObject = {}
 let titleUrl = "http://localhost:8000/api/v1/titles/";
 /** section of the document where the modal will be built */
 const modalAnchor = document.querySelector(".modal-section");
+const heroAnchor = document.querySelector(".hero-section");
+let bestMovieId = "";
+let bestMovieUrl = "http://localhost:8000/api/v1/titles/1508669";
 /** keep track of the reference of currently open modal */
 let currentModal = null;
 
@@ -491,6 +523,7 @@ checkApiServer().then((success) => {
   if (success) {
     if (showCarousel) {
       retrieveSortedMovies().then(() => {
+        buildHero();
         buildDocumentElements()
           .then(async () => {
             // anchor is of class 'carousel-parent' and id the 'category' value
@@ -506,19 +539,12 @@ checkApiServer().then((success) => {
 
           })
       }).then(() => {
-        
-        /** select img elements with modal to open */
-        // document.querySelectorAll(".js-modal").forEach(img => {
-        //   /** and listen for click */
-        //   img.addEventListener('click', openModal);
-        //   console.log('lien', img.id)
-    
-        // })
+
         let modalClickElements = document.querySelectorAll(".js-modal");
         console.log('all img to add click event to', document.querySelectorAll(".js-modal"));
         for (modalClick of modalClickElements) {
           modalClick.addEventListener('click', openModal);
-          console.log('lien', modalClick.id);
+          // console.log('lien', modalClick.id);
         }
 
       })
