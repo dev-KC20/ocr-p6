@@ -53,8 +53,10 @@ class Carousel {
   createNavigation() {
     let nextButton = this.createDivWithClass("carousel__next")
     let prevButton = this.createDivWithClass("carousel__prev")
-    this.root.parentNode.appendChild(nextButton)
-    this.root.parentNode.appendChild(prevButton)
+    this.root.appendChild(nextButton)
+    this.root.appendChild(prevButton)
+    // this.root.parentNode.appendChild(nextButton)
+    // this.root.parentNode.appendChild(prevButton)
     nextButton.addEventListener("click", this.next.bind(this))
     prevButton.addEventListener("click", this.prev.bind(this))
     if (this.options.loop === true) {
@@ -420,7 +422,9 @@ let buildMovieModal = async (modalAnchor, movieModalId) => {
   addElementToModal(movieModalId, newModalDetails, 'Acteur(.e.s):', modalMovie.actors, "content");
   addElementToModal(movieModalId, newModalDetails, 'Résumé: ', modalMovie.description, "content");
   if (modalMovie.worldwide_gross_income != null) {
-    addElementToModal(movieModalId, newModalDetails, 'Résultat Box office: ', modalMovie.worldwide_gross_income, "content");
+    /** format the currency */
+    
+    addElementToModal(movieModalId, newModalDetails, 'Résultat Box office: ',' $'+ Number(modalMovie.worldwide_gross_income).toLocaleString('fr') , "content");
   }
   // button to close the container 
   let newModalCloseButton = document.createElement('button');
@@ -462,17 +466,18 @@ let buildDocumentElements = async () => {
 }
 let buildHero = async () => {
   // const carouselAnchor = document.querySelector(".hero-section");
-  /** the best ever movie is to be retrieved & removed? from the best list */
+  /** remove the Best #1 from the list of bests & put it here only */
   bestMovieId = moviesObject[bestCategory][0].id;
   console.log('bestMovieId buildHero', bestMovieId);
   let newHeroParent = document.createElement("div");
   newHeroParent.setAttribute("class", 'hero-parent');
   newHeroParent.style.display = 'block';
-  // newHeroParent.style.backgroundImage = "url('"+ moviesObject[bestCategory][0].image_url +"')"
-  /** remove the Best #1 from the list of bests & put it here only */
   newHeroParent.setAttribute("id", bestMovieId);
-  newHeroParent.textContent = moviesObject[bestCategory][0].title;
+  // newHeroParent.textContent = moviesObject[bestCategory][0].title;
   heroAnchor.appendChild(newHeroParent);
+  let newHeroParentTitle = document.createElement("p");
+  newHeroParentTitle.textContent = moviesObject[bestCategory][0].title;
+  newHeroParent.appendChild(newHeroParentTitle);
   /** add image Modal */
   let newHeroChild = document.createElement('img');
   newHeroChild.setAttribute("class", 'hero-child');
@@ -520,14 +525,16 @@ let bestMovieId = "";
 let bestMovieUrl = "http://localhost:8000/api/v1/titles/1508669";
 /** keep track of the reference of currently open modal */
 let currentModal = null;
-
 let showCarousel = true;
+let boxLoadingAnchor = document.querySelector(".box-loading");
 
 
 checkApiServer().then((success) => {
   if (success) {
+
     if (showCarousel) {
       retrieveSortedMovies().then(() => {
+        boxLoadingAnchor.parentNode.removeChild(boxLoadingAnchor);
         buildHero();
         buildDocumentElements()
           .then(async () => {

@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "system-ui";
+  font-family: Helvetica, Arial, sans-serif;
   color: black;
 }
 .header > p:nth-child(1) {
@@ -26,41 +26,89 @@
   color: black;
 }
 
-/* The Best film hero image */
-.hero-parent {
 
-  /* Set a specific height */
-  height: 50%;
-
-  /* Position and center the image to scale nicely on all screens */
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+/* while async/await  */
+.box-loading  {
+  width: 85%;
+  height: 90vh;
+  max-width: calc(100vw-20px);
+  max-height: 200vh;
+  /* overflow: hidden; */
+  box-sizing: content-box;
+  font-size: 200%;
+  text-align: center;
   /* position: relative; */
-  width: 95%;
-  display: flex;
-  flex-direction: row;
-  margin: 5% auto;
+  color:green;
+  animation: 3s anim-lineUp ease-out infinite;
 }
-.hero-child{
 
+@keyframes anim-lineUp {
+  0% {
+    opacity: 0;
+    transform: translateY(80%);
+  }
+  20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+
+/* The Best film hero image */
+
+.hero-parent {
   /* Set a specific height */
-  height: 50%;
-
-  /* Position and center the image to scale nicely on all screens */
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  /* height: 30%; */
+  /* position: relative; */
+  width: 85%;
+  margin: 5% auto;
+  /* color: gray; */
+  color: white;
+  text-shadow: 2px 2px 4px lightgray;
+  border: solid whitesmoke 5px;
+  box-sizing: content-box;
+  text-align: center;
   position: relative;
+  font-size: 200%;
+  font-weight: bold;
+  font-style: normal;
+  font-feature-settings: "kern";
+  background-color:antiquewhite;
 }
 
-.hero-child img {
-background-color: black;
-}
-.hero-button  {
-background-color: grey;
+/* .hero-parent p {
+  text-align: start;
+
+  
+} */
+.hero-child {
+  /* Set a specific height */
+  /* height: 100%; */
+  width: 20%;
 }
 
+/* .hero-child img {
+} */
+.hero-button {
+  width: 5%;
+  transition-duration: 0.4s;
+  background-color: rgba(26, 14, 2, 0.534);
+  color: bisque;
+}
+.hero-button:hover {
+  color:beige;
+  background-color: rgba(143, 137, 130, 0.534);
+}
+.hero-plot {
+  color: black;
+  font-size: 60%;
+}
 
 /* Carousel */
 
@@ -75,6 +123,14 @@ background-color: grey;
 .carousel {
   position: relative;
   overflow: hidden;
+}
+
+.carousel-parent {
+  width: 80%;
+  font-size: 2em;
+  margin: auto;
+  padding-top: 20px;
+  text-align: left;
 }
 .carousel__container {
   overflow-x: hidden;
@@ -108,7 +164,7 @@ background-color: grey;
   background-size: 30px 30px;
   border-radius: 50%;
   /* put the arrow button where it is smart to use */
-  /* top: 50%; */
+  top: 50%;
   margin-top: -15px;
   right: -5px;
   cursor: pointer;
@@ -127,37 +183,6 @@ background-color: grey;
   background-image: url(../assets/chevron-left.svg);
   margin: 5px;
   left: -5px;
-}
-
-.categories__title {
-  display: none;
-}
-
-.category {
-  width: 100%;
-}
-.category__title {
-  width: 80%;
-  font-size: 2em;
-  margin: auto;
-  padding-top: 20px;
-  text-align: left;
-}
-.category__carousel {
-  width: 80%;
-  display: flex;
-  flex-direction: row;
-  margin: auto;
-  align-items: center;
-}
-.category__carousel :nth-child(1) {
-  order: 2;
-}
-.category__carousel :nth-child(2) {
-  order: 3;
-}
-.category__carousel :nth-child(3) {
-  order: 1;
 }
 
 /* modal by grafikart */
@@ -196,30 +221,29 @@ background-color: grey;
 .modal-wrapper {
   /* faire apparaitre scroll sur périphérique de petite taille */
   overflow: auto;
-  width: 600px;
-  /* pour que le contenu ne débordre pas selon la taille du type d'écran responsive */
+  width: 60%;
+  /* pour que le contenu ne déborde pas selon la taille du type d'écran responsive */
   max-width: calc(100vw-20px);
   max-height: 80vh;
   /* max-height: calc(100vh-20px); */
   /* pour aérer le contenu dans le wrapper */
   padding: 20px;
   /* fond de couleur blanche */
-  background: white;
+  background: burlywood;
 }
 
-.modal-header{
-  font-size: 40px; 
+.modal-header {
+  font-size: 40px;
 }
-.modal-info{
+.modal-info {
   margin-top: 0px;
   overflow: auto;
   position: relative;
 }
 
 .modal-info > img:nth-child(1) {
-  float: left; 
+  float: left;
   margin: 5px;
-  
 }
 
 .modal-info > p:nth-child(2) {
@@ -227,15 +251,26 @@ background-color: grey;
 }
 
 .modal-info p {
-  font-weight:bold
+  font-weight: bold;
 }
 /* 
 .modal-info a {
   font-size: 25px; 
 } */
-.modal-details{
+.modal-details {
   margin-top: 20px;
 }
 .modal-details p {
-  font-weight:bold
+  font-weight: bold;
+}
+.modal-details a:nth-child(4) ::before {
+  content: "$ ";
+}
+.modal-details button {
+  background-color: blanchedalmond;
+  transition-duration: 50ms;
+}
+.hero-button:hover {
+  color:beige;
+  background-color: rgba(143, 137, 130, 0.534);
 }
