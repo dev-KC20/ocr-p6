@@ -14,20 +14,26 @@
 <body>
 
 
-  <div class="header">
+  <header>
+    <div id="brand">
+      <a >JustStreamIt</a>
     <img id="hs-1" src="/assets/Icon-72.png" alt="Just Stream It header logo">
-    <a class=navigation id="nav-0">
-      Just Stream It
-    </a>
-    <p>
-      <a class=navigation id="nav-1">
-        Acceuil
-      </a>
-      <a class=navigation id="nav-2">
-        Catégories
-      </a>
-    </p>
   </div>
+  <nav><ul>
+    <li><a href="/">Acceuil</a></li>
+    <li><a href="/">Categories</a></li>
+  </ul></nav>
+  <div id="hamburger-icon" onclick="toggleMobileMenu(this)">
+    <div class="bar1"></div>
+    <div class="bar2"></div>
+    <div class="bar3"></div>
+    <ul class="mobile-menu">
+      <li><a href="/">Acceuil</a></li>
+      <li><a href="/">Categories</a></li>
+      
+    </ul>
+  </div>
+  </header>
 
   <div class="box-loading">“Tu ne sais pas quoi regarder pour passer une bonne soirée ? Alors JustStreamIt” </div>
 
@@ -40,6 +46,9 @@
   <div class="best-section">
   </div>
   <div class="modal-section">
+  </div>
+  <div class="footer">
+    <p> Credits to Openclassrooms.fr, grafikart.fr & Adam Nagy  - this site doesn't track any of your data</p>
   </div>
 
 </body>

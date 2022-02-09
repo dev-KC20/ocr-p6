@@ -504,7 +504,10 @@ let buildHero = async () => {
   
 }
 
-
+/** swith to hamburger menu if size < 600px */
+function toggleMobileMenu(menu) {
+  menu.classList.toggle('open');
+}
 
 
 
