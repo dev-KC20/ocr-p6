@@ -152,11 +152,14 @@ ul li:hover {
 
 /* The Best film hero image */
 
+.hero-section {
+  /* not hit the nav bar in mobile size */
+  margin-top: 50px;
+}
 .hero-parent {
   /* Set a specific height */
   /* height: 30%; */
 
-  margin-top: 50px;
   width: 85%;
   margin: 5% auto;
   /* color: gray; */
