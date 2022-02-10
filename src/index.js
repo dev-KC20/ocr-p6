@@ -240,7 +240,6 @@ let getSortedMovies = async function (sortedMoviePageUrl) {
   const response = await fetch(sortedMoviePageUrl);
   if (!response.ok) { throw new Error('Fetch missed, pls check API server'); }
   const data = await response.json();
-  // console.log('data', data);
   return data
 }
 
@@ -312,10 +311,7 @@ const openModal = function (e) {
    * if button : the id is ...
   */
 
-  console.log('target modal0', e.target);
-  console.log('target modal1', "#modal" + e.target.getAttribute('id'));
   const target = document.querySelector("#modal" + e.target.getAttribute('id'))
-  console.log('target modal2', target);
   // /** the modal doesn't exist the first time it is clicked */
   // buildMovieModal(modalAnchor, e.target.getAttribute('id'))
   /**  remove the previous hidden value of display */
@@ -332,7 +328,7 @@ const closeModal = function (e) {
   if (currentModal === null) return
   /* disable the click to operate we only want the ref*/
   e.preventDefault();
-  /**  remove the previous hidden value of display */
+  /**  hide with display */
   currentModal.style.display = "none";
   /**  to be closed sooner or later */
   currentModal.removeEventListener('click', closeModal)
@@ -356,7 +352,7 @@ const stopPropagation = function (e) {
  * @param {*} type
  */
 function addElementToModal(movieModalId, modalAnchor, texte, valeur, type) {
-  // @now :TODO
+
 
   if (type == 'content') {
     let newModalElement = document.createElement('p');
@@ -423,8 +419,8 @@ let buildMovieModal = async (modalAnchor, movieModalId) => {
   addElementToModal(movieModalId, newModalDetails, 'Résumé: ', modalMovie.description, "content");
   if (modalMovie.worldwide_gross_income != null) {
     /** format the currency */
-    
-    addElementToModal(movieModalId, newModalDetails, 'Résultat Box office: ',' $'+ Number(modalMovie.worldwide_gross_income).toLocaleString('fr') , "content");
+
+    addElementToModal(movieModalId, newModalDetails, 'Résultat Box office: ', ' $' + Number(modalMovie.worldwide_gross_income).toLocaleString('fr'), "content");
   }
   // button to close the container 
   let newModalCloseButton = document.createElement('button');
@@ -468,7 +464,6 @@ let buildHero = async () => {
   // const carouselAnchor = document.querySelector(".hero-section");
   /** remove the Best #1 from the list of bests & put it here only */
   bestMovieId = moviesObject[bestCategory][0].id;
-  console.log('bestMovieId buildHero', bestMovieId);
   let newHeroParent = document.createElement("div");
   newHeroParent.setAttribute("class", 'hero-parent');
   newHeroParent.style.display = 'block';
@@ -501,12 +496,47 @@ let buildHero = async () => {
   newHeroPlot.setAttribute("class", 'hero-plot');
   newHeroPlot.textContent = heroPlotMovie.description;
   newHeroParent.appendChild(newHeroPlot);
-  
+
 }
 
-/** swith to hamburger menu if size < 600px */
+/** switch to hamburger menu if size < 600px */
 function toggleMobileMenu(menu) {
   menu.classList.toggle('open');
+}
+
+/**
+ *  @now :TODO
+ * 
+ * mettre toutes les categories sur la page dont les 3 dernières en cachées
+au clic du menu categorie :
+1. masquer la hero display.
+2. afficher les 3 categories cachées
+ * 
+ */
+
+/** switch to more categorie view & hide hero */
+
+const toggleCategory = function (e) {
+  /* disable the click to operate we only want the ref*/
+  e.preventDefault();
+/** don't show the hero */
+heroAnchor.style.display = "none";
+/** unhide 3 additional categories */
+  for (let categoryCurrent of categorieList.slice(4,)) {
+    let hiddenCategoryAnchor = document.querySelector(".best-section #" + categoryCurrent + ".carousel-parent");
+    hiddenCategoryAnchor.style.display = null;
+  }
+}
+const toggleHome = function (e) {
+  /* disable the click to operate we only want the ref*/
+  e.preventDefault();
+  /** show the hero */
+  heroAnchor.style.display = null;
+  /** hide 3 additional categories */
+    for (let categoryCurrent of categorieList.slice(4,)) {
+      let hiddenCategoryAnchor = document.querySelector(".best-section #" + categoryCurrent + ".carousel-parent");
+      hiddenCategoryAnchor.style.display = "none";
+    }
 }
 
 
@@ -515,7 +545,7 @@ function toggleMobileMenu(menu) {
 const carouselAnchor = document.querySelector(".best-section");
 let baseUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score";
 let bestCategory = 'Best'
-let categorieList = [bestCategory, 'Fantasy', 'Action', 'Thriller', 'Crime', 'Sci-Fi', 'Western'];
+let categorieList = [bestCategory, 'Fantasy', 'Sci-Fi', 'Action', 'Thriller', 'Crime', 'Western'];
 let numberOfMoviesPerCategoryToShow = 7;
 /** @type {category:MovieLight[]}  [{'Fantasy': [MovieLight()...]}]*/
 let moviesObject = {}
@@ -530,14 +560,18 @@ let bestMovieUrl = "http://localhost:8000/api/v1/titles/1508669";
 let currentModal = null;
 let showCarousel = true;
 let boxLoadingAnchor = document.querySelector(".box-loading");
+/** remember current nav */
+
+let navCategories = document.querySelectorAll(".nav-categories");
+let navHome = document.querySelectorAll(".nav-home");
+
+
 
 
 checkApiServer().then((success) => {
   if (success) {
-
     if (showCarousel) {
       retrieveSortedMovies().then(() => {
-        boxLoadingAnchor.parentNode.removeChild(boxLoadingAnchor);
         buildHero();
         buildDocumentElements()
           .then(async () => {
@@ -545,7 +579,6 @@ checkApiServer().then((success) => {
             // We loop thru categories to set anchors & build carousel
             for await (let categoryCurrent of categorieList) {
               let bestCategoryAnchor = document.querySelector(".best-section #" + categoryCurrent + ".carousel-parent");
-              // console.log('bestCategoryAnchor dooble?', bestCategoryAnchor);
               new Carousel(bestCategoryAnchor, {
                 slidesToScroll: 1,
                 slidesVisible: 4,
@@ -556,18 +589,37 @@ checkApiServer().then((success) => {
           })
       }).then(() => {
 
+        /** hide up from 4th categorie */
+        for (let categoryCurrent of categorieList.slice(4,)) {
+          let hiddenCategoryAnchor = document.querySelector(".best-section #" + categoryCurrent + ".carousel-parent");
+          hiddenCategoryAnchor.style.display = "none";
+        }
+        /** listen for a call to modal */
         let modalClickElements = document.querySelectorAll(".js-modal");
         for (modalClick of modalClickElements) {
           modalClick.addEventListener('click', openModal);
         }
 
+        /** listen for menu click to categories or home*/
+        for (navcat of navCategories) {
+          navcat.addEventListener('click', toggleCategory, false);
+        };
+
+        for (navho of navHome) {
+          navho.addEventListener('click', toggleHome, false);
+        };
+        /** waiting for async request to come back */
+        boxLoadingAnchor.parentNode.removeChild(boxLoadingAnchor);
       })
+
+
+
     }
 
   }
 }
 )
-  // .catch((reject) => {
+// .catch((reject) => {
   //   throw ('The API server is not available, end of the App');
   // }
 
