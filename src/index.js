@@ -500,9 +500,10 @@ let buildHero = async () => {
 }
 
 /** switch to hamburger menu if size < 600px */
-function toggleMobileMenu(menu) {
-  menu.classList.toggle('open');
-}
+// function toggleMobileMenu(menu) {
+//   // menu.classList.toggle('open');
+//   console.log('removed due to css validator about -webkit-transform');
+// }
 
 /**
  *  @now :TODO

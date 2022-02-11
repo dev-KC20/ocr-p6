@@ -31,6 +31,17 @@ Base : JS sous firefox 96, Fetch, CSS3, HTML5,
 Encore aucun babel-polyfill appliqué
 
 
+CSS Valide !
+
+
+<a href="http://jigsaw.w3.org/css-validator/check/referer">
+    <img style="border:0;width:88px;height:31px"
+        src="http://jigsaw.w3.org/css-validator/images/vcss-blue"
+        alt="CSS Valide !" />
+    </a>
+
+        
+
 ## Credits
 
 Thx to the course given with 'Art' by Jonathan ; credits to @grafikart.fr
