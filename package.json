@@ -1,6 +1,6 @@
 {
   "name": "ocr-p6",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "ranked movie app",
   "main": "index.js",
   "scripts": {
