@@ -25,14 +25,20 @@ Interagir avec une API REST
 
 ## Installation  
   
-  
-Necessite le serveur local d'API : OCMovies-API @/OpenClassrooms-Student-Center/OCMovies-API-EN-FR.git  
-[](https://github.com/OpenClassrooms-Student-Center/OCMovies-API-EN-FR)
+Pour utiliser l'application, il faut :
 
-Base : Firefox 96, Fetch, CSS3, HTML5, Vanilla JS    
-Compatibilité navigateur au travers de babel-polyfill ; testé avec Firefox 96 et Edge 98.
+1. d'installer le serveur local d'API : OCMovies-API @/OpenClassrooms-Student-Center/OCMovies-API-EN-FR.git  selon les instructions [](https://github.com/OpenClassrooms-Student-Center/OCMovies-API-EN-FR)
+2. de cloner l'ensemble du répertoire github dans un répertoire local dédié.
+    ``` git clone https://github.com/dev-KC20/ocr-p6.git
 
-Validation HTML W3C et CSS Valides !
+3. sous VSCode, grace à l'extension Live Server,  ouvrir index.html dans son navigateur habituel
+
+Le développement a été réalisé en CSS3, HTML5 et Vanilla JS sous VSCode 1.64, webpack 5.68.0 avec Firefox 96.
+
+L'accès à l'API se fait au travers de Fetch.    
+La compatibilité navigateur au travers de babel-polyfill a été testée avec Firefox 96 et Edge 98.
+
+Les validations HTML W3C et CSS sont conformes.
 
 <a href="http://jigsaw.w3.org/css-validator/check/referer">
     <img style="border:0;width:88px;height:31px"
