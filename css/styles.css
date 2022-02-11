@@ -69,27 +69,28 @@ ul li:hover {
   text-align: center;
   /* position: relative; */
   color: rgb(2, 43, 2);
-  /* animation: 3s ease-in 1s infinite reverse both running slidein; */
-  animation: 5s anim-lineUp ease-in infinite;
-  animation-duration: 3s;
-  /*animation-delay: 0s; */
+    animation-duration: 5s;
+  animation-name: anim-lineUp;
+  animation-iteration-count: infinite;
+  animation-direction: normal;
 }
 
 @keyframes anim-lineUp {
   0% {
-    opacity: 0;
-    transform: translateY(80%);
+    opacity: 0.30;
+    transform: translateY(30%);
   }
   20% {
-    opacity: 0;
+    opacity: 0.50;
+    transform: translateY(20%);
   }
   50% {
     opacity: 1;
-    transform: translateY(0%);
+    transform: translateY(10%);
   }
   100% {
     opacity: 1;
-    transform: translateY(0%);
+    transform: translateY(10%);
   }
 }
 
